@@ -22,6 +22,12 @@ import android.support.v7.app.AppCompatActivity
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
+import com.socks.library.KLog
 import com.wonderkiln.camerakit.CameraKitError
 import com.wonderkiln.camerakit.CameraKitEvent
 import com.wonderkiln.camerakit.CameraKitEventListener
@@ -32,6 +38,14 @@ import org.caojun.cameracolor.Constant
 import org.caojun.cameracolor.R
 import org.caojun.cameracolor.tensorflow.Classifier
 import org.caojun.cameracolor.tensorflow.TensorFlowImageClassifier
+import org.caojun.cameracolor.tensorflow.TranslateResult
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.util.*
 import java.util.concurrent.Executors
 
 @Route(path = Constant.ACTIVITY_TENSORFLOR)
@@ -44,6 +58,8 @@ class TensorflowActivity : AppCompatActivity() {
 //    private var btnToggleCamera: Button? = null
 //    private var imageViewResult: ImageView? = null
 //    private var cameraView: CameraView? = null
+
+    private lateinit var mRequestQueue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +93,9 @@ class TensorflowActivity : AppCompatActivity() {
 
                 textViewResult.text = results.toString()
 
+                doAsync {
+                    translation(textViewResult.text.toString())
+                }
             }
 
             override fun onVideo(cameraKitVideo: CameraKitVideo) {
@@ -89,6 +108,8 @@ class TensorflowActivity : AppCompatActivity() {
         btnDetectObject.setOnClickListener { cameraView.captureImage() }
 
         initTensorFlowAndLoadModel()
+
+        mRequestQueue = Volley.newRequestQueue(this)
     }
 
     override fun onResume() {
@@ -139,5 +160,64 @@ class TensorflowActivity : AppCompatActivity() {
 
         private val MODEL_FILE = "file:///android_asset/tensorflow_inception_graph.pb"
         private val LABEL_FILE = "file:///android_asset/imagenet_comp_graph_label_strings.txt"
+
+        private val TRANSLATION_URL = "http://api.fanyi.baidu.com/api/trans/vip/translate"
+    }
+
+    @Throws(NoSuchAlgorithmException::class, UnsupportedEncodingException::class)
+    private fun translation(input: String) {
+        var input = input
+        var appid = "20160920000028985"
+        val key = "qy53qCdsTFBRCGwNTsxo"
+        val salt = Random().nextInt(10000)
+        val result = getMD5(input, appid, key, salt)
+        appid = urlEncode(appid)
+        input = urlEncode(input)
+        val strSalt = urlEncode(Integer.toString(salt))
+        val from = urlEncode("en")
+        val to = urlEncode("zh")
+        val url = (TRANSLATION_URL + "?q=" + input + "&from=" + from + "&to=" + to + "&appid="
+                + appid + "&salt=" + strSalt + "&sign=" + result)
+        val stringRequest = StringRequest(url, Response.Listener { response ->
+            doAsync {
+                KLog.d("translation", "response: $response")
+                val gson = Gson()
+                val result = gson.fromJson(response, TranslateResult::class.java)
+                val dst = result.transResult[0].dst
+                KLog.d("translation", "result: $result")
+                KLog.d("translation", "dst: $dst")
+                uiThread {
+                    textViewResult.text = "${textViewResult.text}\n$dst"
+                }
+            }
+        }, Response.ErrorListener { })
+        mRequestQueue.add(stringRequest)
+    }
+
+    @Throws(NoSuchAlgorithmException::class, UnsupportedEncodingException::class)
+    private fun getMD5(input: String, appid: String, key: String, salt: Int): String {
+        val messageDigest = MessageDigest.getInstance("MD5")
+        messageDigest.reset()
+        val s = appid + input + salt + key
+        messageDigest.update(s.toByteArray())
+        val digest = messageDigest.digest()
+        val md5StrBuilder = StringBuilder()
+
+        //将加密后的byte数组转换为十六进制的字符串,否则的话生成的字符串会乱码
+        for (i in digest.indices) {
+            val iDigest = 0xFF and digest[i].toInt()
+            if (Integer.toHexString(iDigest).length == 1) {
+                md5StrBuilder.append("0").append(
+                        Integer.toHexString(iDigest))
+            } else {
+                md5StrBuilder.append(Integer.toHexString(iDigest))
+            }
+        }
+        return md5StrBuilder.toString()
+    }
+
+    @Throws(UnsupportedEncodingException::class)
+    private fun urlEncode(s: String): String {
+        return URLEncoder.encode(s, "UTF-8")
     }
 }
