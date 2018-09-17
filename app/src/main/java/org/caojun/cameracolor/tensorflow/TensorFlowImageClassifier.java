@@ -19,10 +19,7 @@ package org.caojun.cameracolor.tensorflow;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.support.v4.os.TraceCompat;
-import android.util.Log;
-
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -98,7 +95,6 @@ public class TensorFlowImageClassifier implements Classifier {
         // Read the label names into memory.
         // TODO(andrewharp): make this handle non-assets.
         String actualFilename = labelFilename.split("file:///android_asset/")[1];
-        Log.i(TAG, "Reading labels from: " + actualFilename);
         BufferedReader br = null;
         br = new BufferedReader(new InputStreamReader(assetManager.open(actualFilename)));
         String line;
@@ -111,7 +107,6 @@ public class TensorFlowImageClassifier implements Classifier {
         // The shape of the output is [N, NUM_CLASSES], where N is the batch size.
         int numClasses =
                 (int) c.inferenceInterface.graph().operation(outputName).output(0).shape().size(1);
-        Log.i(TAG, "Read " + c.labels.size() + " labels, output layer size is " + numClasses);
 
         // Ideally, inputSize could have been retrieved from the shape of the input operation.  Alas,
         // the placeholder node for input in the graphdef typically used does not specify a shape, so it
