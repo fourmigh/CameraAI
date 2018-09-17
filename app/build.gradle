@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion rootProject.ext.sdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -43,11 +45,12 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$androidsupport_version"
     implementation "com.android.support:design:$androidsupport_version"
     implementation 'com.alibaba:arouter-api:latest.release'
-    annotationProcessor "com.alibaba:arouter-compiler:latest.release"
+    kapt "com.alibaba:arouter-compiler:latest.release"
     implementation 'com.alibaba:fastjson:latest.release'
     implementation 'com.github.zhaokaiqiang.klog:library:latest.release'
     implementation project(':UtilsLibrary')
     implementation 'org.jetbrains.anko:anko-common:latest.release'
     implementation 'org.tensorflow:tensorflow-android:latest.release'
     implementation 'com.wonderkiln:camerakit:latest.release'
+    implementation 'com.mcxiaoke.volley:library:latest.release'
 }
