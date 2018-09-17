@@ -27,7 +27,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
-import com.socks.library.KLog
 import com.wonderkiln.camerakit.CameraKitError
 import com.wonderkiln.camerakit.CameraKitEvent
 import com.wonderkiln.camerakit.CameraKitEventListener
@@ -180,12 +179,9 @@ class TensorflowActivity : AppCompatActivity() {
                 + appid + "&salt=" + strSalt + "&sign=" + result)
         val stringRequest = StringRequest(url, Response.Listener { response ->
             doAsync {
-                KLog.d("translation", "response: $response")
-                val gson = Gson()
-                val result = gson.fromJson(response, TranslateResult::class.java)
+
+                val result = Gson().fromJson(response, TranslateResult::class.java)
                 val dst = result.transResult[0].dst
-                KLog.d("translation", "result: $result")
-                KLog.d("translation", "dst: $dst")
                 uiThread {
                     textViewResult.text = "${textViewResult.text}\n$dst"
                 }
