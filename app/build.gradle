@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.jetbrains.anko:anko-common:latest.release'
     implementation 'org.tensorflow:tensorflow-android:1.2.0'
     implementation 'com.wonderkiln:camerakit:latest.release'
-    implementation 'com.mcxiaoke.volley:library:latest.release'
-    implementation 'com.google.code.gson:gson:latest.release'
+//    implementation 'com.mcxiaoke.volley:library:latest.release'
+//    implementation 'com.google.code.gson:gson:latest.release'
     implementation 'com.github.zhaokaiqiang.klog:library:latest.release'
 }
