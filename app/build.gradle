@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "org.caojun.cameracolor"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.sdkVersion
 
         externalNativeBuild {
@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.github.zhaokaiqiang.klog:library:latest.release'
     implementation project(':UtilsLibrary')
     implementation 'org.jetbrains.anko:anko-common:latest.release'
-    implementation 'org.tensorflow:tensorflow-android:latest.release'
+    implementation 'org.tensorflow:tensorflow-android:1.2.0'
     implementation 'com.wonderkiln:camerakit:latest.release'
     implementation 'com.mcxiaoke.volley:library:latest.release'
     implementation 'com.google.code.gson:gson:latest.release'

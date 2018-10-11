@@ -38,7 +38,7 @@ import java.util.Vector;
  */
 public class TensorFlowImageClassifier implements Classifier {
 
-    private static final String TAG = "ImageClassifier";
+//    private static final String TAG = "ImageClassifier";
 
     // Only return this many results with at least this confidence.
     private static final int MAX_RESULTS = 3;
@@ -52,7 +52,7 @@ public class TensorFlowImageClassifier implements Classifier {
     private float imageStd;
 
     // Pre-allocated buffers.
-    private Vector<String> labels = new Vector<String>();
+    private Vector<String> labels = new Vector<>();
     private int[] intValues;
     private float[] floatValues;
     private float[] outputs;
@@ -95,8 +95,7 @@ public class TensorFlowImageClassifier implements Classifier {
         // Read the label names into memory.
         // TODO(andrewharp): make this handle non-assets.
         String actualFilename = labelFilename.split("file:///android_asset/")[1];
-        BufferedReader br = null;
-        br = new BufferedReader(new InputStreamReader(assetManager.open(actualFilename)));
+        BufferedReader br = new BufferedReader(new InputStreamReader(assetManager.open(actualFilename)));
         String line;
         while ((line = br.readLine()) != null) {
             c.labels.add(line);

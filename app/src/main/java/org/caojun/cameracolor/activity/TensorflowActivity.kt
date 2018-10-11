@@ -52,24 +52,14 @@ class TensorflowActivity : AppCompatActivity() {
 
     private lateinit var classifier: Classifier
     private val executor = Executors.newSingleThreadExecutor()
-//    private var textViewResult: TextView? = null
-//    private var btnDetectObject: Button? = null
-//    private var btnToggleCamera: Button? = null
-//    private var imageViewResult: ImageView? = null
-//    private var cameraView: CameraView? = null
 
     private lateinit var mRequestQueue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tensorflow)
-//        cameraView = findViewById(R.id.cameraView)
-//        imageViewResult = findViewById(R.id.imageViewResult)
-//        textViewResult = findViewById(R.id.textViewResult)
-        textViewResult.movementMethod = ScrollingMovementMethod()
 
-//        btnToggleCamera = findViewById(R.id.btnToggleCamera)
-//        btnDetectObject = findViewById(R.id.btnDetectObject)
+        textViewResult.movementMethod = ScrollingMovementMethod()
 
         cameraView.addCameraKitListener(object : CameraKitEventListener {
             override fun onEvent(cameraKitEvent: CameraKitEvent) {
@@ -92,9 +82,9 @@ class TensorflowActivity : AppCompatActivity() {
 
                 textViewResult.text = results.toString()
 
-                doAsync {
-                    translation(textViewResult.text.toString())
-                }
+//                doAsync {
+//                    translation(textViewResult.text.toString())
+//                }
             }
 
             override fun onVideo(cameraKitVideo: CameraKitVideo) {
@@ -158,7 +148,7 @@ class TensorflowActivity : AppCompatActivity() {
         private val OUTPUT_NAME = "output"
 
         private val MODEL_FILE = "file:///android_asset/tensorflow_inception_graph.pb"
-        private val LABEL_FILE = "file:///android_asset/imagenet_comp_graph_label_strings.txt"
+        private val LABEL_FILE = "file:///android_asset/imagenet_comp_graph_label_cn.txt"
 
         private val TRANSLATION_URL = "http://api.fanyi.baidu.com/api/trans/vip/translate"
     }
